@@ -53,6 +53,16 @@ showstringspaces=false            %
 % Python for inline
 \newcommand\pythoninline[1]{{\pythonstyle\lstinline!#1!}}
 
+\lstdefinestyle{BashInputStyle}{
+  language=bash,
+  basicstyle=\small\sffamily,
+  %frame=tb,
+  columns=fullflexible,
+  backgroundcolor=\color{gray!20},
+  linewidth=\linewidth,
+}
+
+
 \begin{document}
 \setlength{\parindent}{0pt}
 
@@ -62,7 +72,20 @@ showstringspaces=false            %
 
 \subsection*{22.01.2016 (3h)}
 
-\subsubsection*{a)}
-Insert text here...
+\subsubsection*{Ideas}
+\begin{itemize}
+  \item Vigra efficiency improvements
+  \item CUDA/OpenCL (CUDA samples!)
+  \item OpenGL
+  \item FFT approach
+\end{itemize}
+
+\subsubsection*{Commands}
+
+\begin{lstlisting}[style=BashInputStyle]
+# source miniconda2/bin/activate ilastik-devel \\
+# source miniconda2/bin/activate root \\
+# conda create -n ilastik-devel -c ilastik ilastik-everything-but-tracking
+\end{lstlisting}
 
 \end{document}

@@ -68,11 +68,51 @@ showstringspaces=false            %
 
 \setlist{noitemsep}
 
-\section*{HiWi HCI Nots}
 
-\subsection*{22.01.2016 (3h)}
+\section{Current setup}
+  \subsection{vigra.filters.gaussianSmoothing(img, sigma)}
+    \begin{itemize}
+      \item separated x-,y- convolution
+      \item kernel is initialized from scratch for every call
+      \item kernel element: $k[i] = \frac{1}{\sqrt{2\pi}\sigma} e^{-\frac{i^2}{2\sigma^2}} $
+      \item kernel radius: $r = \textrm{round}(3*\sigma)$
+    \end{itemize}
+  \subsection{vigra.filters.laplacianOfGaussian(img, sigma)}
+  \subsection{vigra.filters.gaussianGradientMagnitude(img, sigma)}
+  \subsection{vigra.filters.gaussianSmoothing(img, sigma) - vigra.filters.gaussianSmoothing(img, 0.66*sigma)}
+  \subsection{vigra.filters.structureTensorEigenvalues(img, sigma, sigma/2.0)}
+  \subsection{vigra.filters.hessianOfGaussianEigenvalues(img, sigma)}
 
-\subsubsection*{Ideas}
+
+\section{HiWi HCI Nots}
+
+\subsection{26.01.2016 (3h)}
+
+Base on CUDA samples. separableConvolution and textureConvolution are already implemented.
+
+\subsubsection{snippets}
+  \begin{python}[caption="print out gaussian 1D kernel"]
+    import vigra
+
+    sigma = 3
+
+    kernel = vigra.filters.Kernel1D()
+    kernel.initGaussian(sigma)
+    
+    for i in range(kernel.left(),kernel.right()+1):
+      print kernel[i]
+  \end{python}
+
+\subsubsection{Addresses}
+  \begin{itemize}
+    \item bigheron - GPU system
+    \item hciwiki.iwr.uni-heidelberg.de
+  \end{itemize}
+
+
+\subsection{22.01.2016 (3h)}
+
+\subsubsection{Ideas}
 \begin{itemize}
   \item Vigra efficiency improvements
   \item CUDA/OpenCL (CUDA samples!)
@@ -80,7 +120,7 @@ showstringspaces=false            %
   \item FFT approach
 \end{itemize}
 
-\subsubsection*{Commands}
+\subsubsection{Commands}
 
 \begin{lstlisting}[style=BashInputStyle]
 # source miniconda2/bin/activate ilastik-devel \\

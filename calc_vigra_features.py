@@ -17,8 +17,8 @@ def vigra_gaussfast(data,kernels):
   img = vigra.Image(data)
   out = []
   for k in kernels:
-    tmp = vigra.convolve(img,k)
-    out.append(vigra.convolve(tmp,k))
+    tmp = vigra.filters.convolveOneDimension(img,0,k)
+    out.append(vigra.filters.convolveOneDimension(tmp,1,k))
   return out
 
 def scipy_gauss(data):
@@ -85,6 +85,10 @@ if __name__ == "__main__":
     vigra_gauss(d)
   end = time.clock()
   print "Time:",end-start
+
+  # compare data
+  for v,s in zip(vout,sout):
+    print np.linalg.norm(v-s)
 
 ### compare scipy and vigra
 #  for d in data:

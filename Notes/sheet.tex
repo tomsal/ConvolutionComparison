@@ -68,6 +68,14 @@ showstringspaces=false            %
 
 \setlist{noitemsep}
 
+\section{TODO}
+  \begin{itemize}
+    \item (29.01.) Compare CUDA vs. VIGRA vs. ArrayFire
+    \item (29.01.) Implement CUDA c++ gaussian (ignore padding)
+    \item (29.01.) Implement ArrayFire c++ gaussian (ignore padding)
+    \item DONE: (29.01.) Implement VIGRA c++ gaussian (ignore padding)
+  \end{itemize}
+
 
 \section{Current setup}
   \subsection{vigra.filters.gaussianSmoothing(img, sigma)}
@@ -85,6 +93,30 @@ showstringspaces=false            %
 
 
 \section{HiWi HCI Nots}
+
+\subsection{29.01.2016 (9:30 - 12:00, 12:30 - 14:30)}
+
+\subsubsection{ArrayFire}
+  \begin{itemize}
+    \item handles 1D,2D,3D convolutions
+    \item allows batch processing (1 Kernel, n images or n Kernels, 1 image and so on)
+    \item Does it seperate Kernels?
+    \item Example: http://www.arrayfire.com/docs/getting_started_2convolve_8cpp-example.htm
+  \end{itemize}
+
+\subsubsection{Talked to Sven}
+  \begin{itemize}
+    \item ArrayFire
+    \item nexts steps (see todo)
+    \item received Michaela's code
+  \end{itemize}
+
+\subsubsection{Commands}
+
+  Show vigra compiler options
+  \begin{lstlisting}[style=BashInputStyle]
+  # vigra-config --cpp-flags --libs 
+  \end{lstlisting}
 
 \subsection{26.01.2016 (3h)}
 

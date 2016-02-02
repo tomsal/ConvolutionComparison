@@ -70,6 +70,7 @@ showstringspaces=false            %
 
 \section{TODO}
   \begin{itemize}
+    \item (02.02.) Checkout OpenCV CUDA/OpenCL performance
     \item (29.01.) Compare CUDA vs. VIGRA vs. ArrayFire
     \item (29.01.) Implement CUDA c++ gaussian (ignore padding)
     \item (29.01.) Implement ArrayFire c++ gaussian (ignore padding)
@@ -92,72 +93,82 @@ showstringspaces=false            %
   \subsection{vigra.filters.hessianOfGaussianEigenvalues(img, sigma)}
 
 
-\section{HiWi HCI Nots}
+\section{HiWi HCI Notes}
 
-\subsection{29.01.2016 (9:30 - 12:00, 12:30 - 14:30)}
+\subsection{02.02.2016 (1.5h)}
 
-\subsubsection{ArrayFire}
-  \begin{itemize}
-    \item handles 1D,2D,3D convolutions
-    \item allows batch processing (1 Kernel, n images or n Kernels, 1 image and so on)
-    \item Does it seperate Kernels?
-    \item Example: http://www.arrayfire.com/docs/getting_started_2convolve_8cpp-example.htm
-  \end{itemize}
+  \subsubsection{OpenCV}
+    \begin{itemize}
+      \item CUDA support
+      \item \url{http://docs.opencv.org/3.0.0/d4/d25/classcv_1_1cuda_1_1Convolution.html}
+      \item Comparison OpenCV vs. ArrayFire (LibJacket) \url{http://mcclanahoochie.com/blog/2011/09/opencv-vs-libjacket-gpu-sobel-filtering/}
+    \end{itemize}
 
-\subsubsection{Talked to Sven}
-  \begin{itemize}
-    \item ArrayFire
-    \item nexts steps (see todo)
-    \item received Michaela's code
-  \end{itemize}
 
-\subsubsection{Commands}
+\subsection{29.01.2016 (9:30 - 12:00, 12:30 - 14:30, 4.5h)}
 
-  Show vigra compiler options
-  \begin{lstlisting}[style=BashInputStyle]
-  # vigra-config --cpp-flags --libs 
-  \end{lstlisting}
+  \subsubsection{ArrayFire}
+    \begin{itemize}
+      \item handles 1D,2D,3D convolutions
+      \item allows batch processing (1 Kernel, n images or n Kernels, 1 image and so on)
+      \item Does it seperate Kernels?
+      \item Example: \url{http://www.arrayfire.com/docs/getting_started_2convolve_8cpp-example.htm}
+    \end{itemize}
+
+  \subsubsection{Talked to Sven}
+    \begin{itemize}
+      \item ArrayFire
+      \item nexts steps (see todo)
+      \item received Michaela's code
+    \end{itemize}
+
+  \subsubsection{Commands}
+
+    Show vigra compiler options
+    \begin{lstlisting}[style=BashInputStyle]
+    # vigra-config --cpp-flags --libs 
+    \end{lstlisting}
 
 \subsection{26.01.2016 (3h)}
 
-Base on CUDA samples. separableConvolution and textureConvolution are already implemented.
+  Base on CUDA samples. separableConvolution and textureConvolution are already implemented.
 
-\subsubsection{snippets}
-  \begin{python}[caption="print out gaussian 1D kernel"]
-    import vigra
+  \subsubsection{snippets}
+    \begin{python}[caption="print out gaussian 1D kernel"]
+      import vigra
 
-    sigma = 3
+      sigma = 3
 
-    kernel = vigra.filters.Kernel1D()
-    kernel.initGaussian(sigma)
-    
-    for i in range(kernel.left(),kernel.right()+1):
-      print kernel[i]
-  \end{python}
+      kernel = vigra.filters.Kernel1D()
+      kernel.initGaussian(sigma)
+      
+      for i in range(kernel.left(),kernel.right()+1):
+	print kernel[i]
+    \end{python}
 
-\subsubsection{Addresses}
-  \begin{itemize}
-    \item bigheron - GPU system
-    \item hciwiki.iwr.uni-heidelberg.de
-  \end{itemize}
+  \subsubsection{Addresses}
+    \begin{itemize}
+      \item bigheron - GPU system
+      \item hciwiki.iwr.uni-heidelberg.de
+    \end{itemize}
 
 
 \subsection{22.01.2016 (3h)}
 
-\subsubsection{Ideas}
-\begin{itemize}
-  \item Vigra efficiency improvements
-  \item CUDA/OpenCL (CUDA samples!)
-  \item OpenGL
-  \item FFT approach
-\end{itemize}
+  \subsubsection{Ideas}
+    \begin{itemize}
+      \item Vigra efficiency improvements
+      \item CUDA/OpenCL (CUDA samples!)
+      \item OpenGL
+      \item FFT approach
+    \end{itemize}
 
-\subsubsection{Commands}
+  \subsubsection{Commands}
 
-\begin{lstlisting}[style=BashInputStyle]
-# source miniconda2/bin/activate ilastik-devel \\
-# source miniconda2/bin/activate root \\
-# conda create -n ilastik-devel -c ilastik ilastik-everything-but-tracking
-\end{lstlisting}
+    \begin{lstlisting}[style=BashInputStyle]
+    # source miniconda2/bin/activate ilastik-devel \\
+    # source miniconda2/bin/activate root \\
+    # conda create -n ilastik-devel -c ilastik ilastik-everything-but-tracking
+    \end{lstlisting}
 
 \end{document}

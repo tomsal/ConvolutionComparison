@@ -1,4 +1,4 @@
-This is LuaTeX, Version beta-0.76.0-2013121407 (rev 4627)  (format=lualatex 2014.5.2)  26 JAN 2016 15:11
+This is LuaTeX, Version beta-0.76.0-2013121407 (rev 4627)  (format=lualatex 2014.5.2)  2 FEB 2016 14:55
  restricted \write18 enabled.
 **sheet.tex
 (./sheet.tex
@@ -545,33 +545,39 @@ LaTeX Info: Redefining \nameref on input line 66.
 (./sheet.out) (./sheet.out)
 \@outlinefile=\write3
 \c@lstlisting=\count168
-LaTeX Font Info:    Try loading font information for OMS+cmr on input line 75.
+LaTeX Font Info:    Try loading font information for OMS+cmr on input line 73.
 
 (/usr/share/texlive/texmf-dist/tex/latex/base/omscmr.fd
 File: omscmr.fd 1999/05/25 v2.5h Standard LaTeX font definitions
 )
 LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <12> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 75.
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 73.
 
-Overfull \hbox (11.7725pt too wide) in paragraph at lines 83--83
+Overfull \hbox (11.7725pt too wide) in paragraph at lines 92--92
 [][]\OT1/cmr/bx/n/14.4 vi-gra.fil-ters.struc-tureTen-sor-Eigen-val-ues(img, sig
 ma, sig-
  []
 
 
-Overfull \hbox (4.41914pt too wide) in paragraph at lines 84--84
+Overfull \hbox (4.41914pt too wide) in paragraph at lines 93--93
 [][]\OT1/cmr/bx/n/14.4 vi-gra.fil-ters.hes-sianOf-Gaus-sianEigen-val-ues(img, s
 igma) 
  []
 
-(/usr/share/texlive/texmf-dist/tex/latex/listings/lstlang1.sty
-File: lstlang1.sty 2013/08/26 1.5b listings language file
-)
-Package hyperref Info: bookmark level for unknown lstlisting defaults to 0 on in
-put line 94.
- [1
+
+Overfull \hbox (24.84622pt too wide) in paragraph at lines 103--104
+[][][]$\OT1/cmtt/m/n/12 http : / / docs . opencv . org / 3 . 0 . 0 / d4 / d25 /
+ classcv _ 1 _ 1cuda _ 1 _ 1Convolution .
+ []
+
+[1
 
 {/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}]
+Overfull \hbox (9.63037pt too wide) in paragraph at lines 115--116
+[][]\OT1/cmr/m/n/12 Ex-am-ple: []$\OT1/cmtt/m/n/12 http : / / www . arrayfire .
+ com / docs / getting _ started _ 2convolve _
+ []
+
 (/usr/share/texlive/texmf-dist/tex/latex/listings/lstlang1.sty
 File: lstlang1.sty 2013/08/26 1.5b listings language file
 )
@@ -580,40 +586,54 @@ File: lstlang1.sty 2013/08/26 1.5b listings language file
 )
 
 LaTeX Font Warning: Font shape `OT1/cmss/m/it' in size <10.95> not available
-(Font)              Font shape `OT1/cmss/m/sl' tried instead on input line 126.
+(Font)              Font shape `OT1/cmss/m/sl' tried instead on input line 129.
 
-LaTeX Font Info:    Try loading font information for OMS+cmss on input line 126.
+(/usr/share/texlive/texmf-dist/tex/latex/listings/lstlang1.sty
+File: lstlang1.sty 2013/08/26 1.5b listings language file
+)
+Package hyperref Info: bookmark level for unknown lstlisting defaults to 0 on in
+put line 137.
+ [2]
+LaTeX Font Info:    Try loading font information for OMS+cmss on input line 169.
 
-LaTeX Font Info:    No file OMScmss.fd. on input line 126.
+LaTeX Font Info:    No file OMScmss.fd. on input line 169.
+
 
 LaTeX Font Warning: Font shape `OMS/cmss/m/it' undefined
 (Font)              using `OMS/cmsy/m/n' instead
-(Font)              for ÿsymbol `textbackslash' on input line 126.
+(Font)              for ÿsymbol `textbackslash' on input line 169.
 
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 131.
-[2]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 131.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 174.
+[3]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 174.
  (./sheet.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 131.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 131.
-Package rerunfilecheck Info: File `sheet.out' has not changed.
-(rerunfilecheck)             Checksum: 03FE35A92F8CB8362F8CE5AB4E2586CA;1157.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 174.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 174.
 
+
+Package rerunfilecheck Warning: File `sheet.out' has changed.
+(rerunfilecheck)                Rerun to get outlines right
+(rerunfilecheck)                or use package `bookmark'.
+
+Package rerunfilecheck Info: Checksums for `sheet.out':
+(rerunfilecheck)             Before: 000433EDE494500B99C3FA099D48F6C9;1638
+(rerunfilecheck)             After:  67C7E65DF46E920895FFF2993B9D55E2;1641.
 
 LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 131.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 174.
  )
 
 Here is how much of LuaTeX's memory you used:
- 10937 strings out of 494743
+ 10956 strings out of 494743
  100000,319454 words of node,token memory allocated
- 332 words of node memory still in use:
-   5 hlist, 2 vlist, 2 rule, 2 glue, 1 kern, 45 glue_spec, 1 write nodes
-   avail lists: 2:25,3:139,4:698,5:139,6:945,7:61,8:23,9:336,10:81
- 14131 multiletter control sequences out of 65536+600000
- 42 fonts using 1662335 bytes
- 37i,5n,54p,283b,699s stack positions out of 5000i,500n,10000p,200000b,100000s
+ 345 words of node memory still in use:
+   5 hlist, 2 vlist, 2 rule, 2 glue, 1 kern, 45 glue_spec, 3 action, 1 write nod
+es
+   avail lists: 2:25,3:226,4:785,5:138,6:1270,7:63,8:23,9:357,10:96
+ 14139 multiletter control sequences out of 65536+600000
+ 43 fonts using 1701567 bytes
+ 37i,5n,58p,283b,679s stack positions out of 5000i,500n,10000p,200000b,100000s
 </usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/s
 hare/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></usr/share/te
 xlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb></usr/share/texlive/te
@@ -623,12 +643,13 @@ ype1/public/amsfonts/cm/cmr6.pfb></usr/share/texlive/texmf-dist/fonts/type1/publ
 ic/amsfonts/cm/cmr8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfon
 ts/cm/cmssi10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/
 cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.p
-fb></usr/share/texlive/texmf-dist/fonts/type1/public/txfonts/t1xbtt.pfb></usr/sh
-are/texlive/texmf-dist/fonts/type1/public/txfonts/t1xtt.pfb>
-Output written on sheet.pdf (2 pages, 107027 bytes).
+fb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt12.pfb></us
+r/share/texlive/texmf-dist/fonts/type1/public/txfonts/t1xbtt.pfb></usr/share/tex
+live/texmf-dist/fonts/type1/public/txfonts/t1xtt.pfb>
+Output written on sheet.pdf (3 pages, 121418 bytes).
 
-PDF statistics: 137 PDF objects out of 1000 (max. 8388607)
- 119 compressed objects within 2 object streams
- 31 named destinations out of 1000 (max. 131072)
- 113 words of extra memory for PDF output out of 10000 (max. 10000000)
+PDF statistics: 185 PDF objects out of 1000 (max. 8388607)
+ 165 compressed objects within 2 object streams
+ 41 named destinations out of 1000 (max. 131072)
+ 169 words of extra memory for PDF output out of 10000 (max. 10000000)
 

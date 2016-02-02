@@ -40,13 +40,20 @@ int main(int argc, char **argv){
         af::info();
         // setup image and device copies of kernels
         img = randu(3072, 3072);
-        dx = array(5, 1, h_dx); // 5x1 kernel
-        spread = array(1, 5, h_spread); // 1x5 kernel
-        kernel = matmul(dx, spread); // 5x5 kernel
-        printf("full 2D convolution:         %.5f seconds\n", timeit(full));
-        printf("separable, device pointers:  %.5f seconds\n", timeit(dsep));
+	timer::start();
+	for(int i = 0; i < 10; i++){
+	  dx = array(5, 1, h_dx); // 5x1 kernel
+	  spread = array(1, 5, h_spread); // 1x5 kernel
+	  kernel = matmul(dx, spread); // 5x5 kernel
+	  full();
+	  //dsep();
+	}
+	double time = timer::stop();
+        printf("Time passed: %.5f seconds\n", timeit(full));
+//        printf("full 2D convolution:         %.5f seconds\n", timeit(full));
+//        printf("separable, device pointers:  %.5f seconds\n", timeit(dsep));
         // ensure values are all the same across versions
-        if (fail(full_out, dsep_out)) { throw af::exception("full != dsep"); }
+        //if (fail(full_out, dsep_out)) { throw af::exception("full != dsep"); }
     } catch (af::exception& e) {
         fprintf(stderr, "%s\n", e.what());
     }

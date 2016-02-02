@@ -2,7 +2,28 @@ import vigra
 import h5py as h5
 import numpy as np
 import time
+import arrayfire as af
 from scipy.ndimage.filters import gaussian_filter
+
+
+def af_gauss(data,kernels):
+#  data = np.array(data).swapaxes(0,1)
+#  data = data.swapaxes(1,2)
+
+  d_kernels = []
+  for k in kernels:
+  #  d_kernels.append(af.np_to_af_array(k))
+    d_k = af.np_to_af_array(k)
+  #  #d_kernels.append(d_k)
+    d_kernels.append(af.matmul(d_k,af.transpose(d_k)))
+  
+  ##d_k = af.matmul(af.transpose(d_k),d_k)
+  for d in data:
+    d_img = af.np_to_af_array(d)
+
+    for d_k in d_kernels:
+      #res = af.convolve2_separable(d_k, af.transpose(d_k), d_img)
+      res = af.convolve2(d_img, d_k)
 
 def vigra_gauss(data):
   img = vigra.Image(data)
@@ -68,14 +89,22 @@ if __name__ == "__main__":
   end = time.clock()
   print "Time:",end-start
 
-  print "Fast convolution"
-  start = time.clock()
   sigmas = [0.7, 1.0, 1.6, 3.5, 5, 10]
   kernels = [vigra.filters.Kernel1D() for i in range(len(sigmas))]
   for k,s in zip(kernels,sigmas):
     k.initGaussian(s)
-  for d in data:
-    vigra_gaussfast(d,kernels)
+
+  npkernels = []
+  for k in kernels:
+    k1 = np.zeros(k.size())
+
+    for i,j in zip(range(k.size()),range(k.left(), k.size()+1)):
+      k1[i] = k[j] 
+    npkernels.append(k1)
+
+  print "Fast convolution"
+  start = time.clock()
+  af_gauss(data,npkernels)
   end = time.clock()
   print "Time:",end-start
 
@@ -86,9 +115,9 @@ if __name__ == "__main__":
   end = time.clock()
   print "Time:",end-start
 
-  # compare data
-  for v,s in zip(vout,sout):
-    print np.linalg.norm(v-s)
+#  # compare data
+#  for v,s in zip(vout,sout):
+#    print np.linalg.norm(v-s)
 
 ### compare scipy and vigra
 #  for d in data:

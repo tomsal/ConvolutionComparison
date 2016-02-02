@@ -13,42 +13,39 @@
 using namespace vigra;
 
 float mean(float* array, int k){
-    float mean = 0;
-    int i;
-    for(i=0; i<k ; i++){
-        mean+=array[i];
-    }
-    return (mean/k);
+  float mean = 0;
+  for(int i = 0; i < k ; i++){
+    mean+=array[i];
+  }
+  return (mean/k);
 }
 
 float max_array(float* arr, int length){
-	float max = 0;
-	int i;
-	for(i=0; i<length; i++){
-		max = (arr[i]> max) ? arr[i] : max;
-	}
-	return max;
+  float max = 0;
+  for(int i = 0; i < length; i++){
+    max = (arr[i] > max) ? arr[i] : max;
+  }
+
+  return max;
 }
 
-main(int argc, char ** argv)
-{
-    
-	float sigma = 2.66;
-	int h = 3072;
-	int w = 3072;
+main(int argc, char ** argv){
+  float sigma = 2.66;
+  int h = 3072;
+  int w = 3072;
 
-	 //vigra 
+   //vigra 
   char * in_filename = argv[1];
-	ImageImportInfo imageInfo(in_filename);
-	MultiArray<2, float> imageArray(imageInfo.shape());
-	MultiArray<2, float> resultArray(imageInfo.shape());
+  ImageImportInfo imageInfo(in_filename);
+  MultiArray<2, float> imageArray(imageInfo.shape());
+  MultiArray<2, float> resultArray(imageInfo.shape());
 
-	importImage(imageInfo, imageArray);
+  importImage(imageInfo, imageArray);
 
-	//speed comparison
+  //speed comparison
 
-	float min = -1;
-	int rep = 10;
+  float min = -1;
+  int rep = 10;
   float dif, m;
   struct timespec start, end;  
 

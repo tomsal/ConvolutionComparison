@@ -14,7 +14,7 @@ using namespace vigra;
 
 float mean(float* array, int k){
   float mean = 0;
-  for(int i = 0; i < k ; i++){
+  for(int i = 0; i < k; i++){
     mean+=array[i];
   }
   return (mean/k);
@@ -35,7 +35,7 @@ main(int argc, char ** argv){
   int w = 3072;
 
    //vigra 
-  char * in_filename = argv[1];
+  char* in_filename = argv[1];
   ImageImportInfo imageInfo(in_filename);
   MultiArray<2, float> imageArray(imageInfo.shape());
   MultiArray<2, float> resultArray(imageInfo.shape());

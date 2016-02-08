@@ -70,10 +70,12 @@ showstringspaces=false            %
 
 \section{TODO}
   \begin{itemize}
-    \item (03.02.) Investigate data movement in ArrayFire
+    \item (29.01.) Compare CUDA vs. VIGRA vs. ArrayFire in C++
+    \item (08.02.) Implement arrayfire hessianofgaussian or stensor (C++ or python)
     \item (02.02.) Checkout OpenCV CUDA/OpenCL performance
-    \item (29.01.) Compare CUDA vs. VIGRA vs. ArrayFire
     \item (29.01.) Implement CUDA c++ gaussian (ignore padding)
+    \item DONE: (08.02.) Compare python vigra, opencv, arrayfire
+    \item DONE: (03.02.) Investigate data movement in ArrayFire (see af usergroup post)
     \item DONE: (29.01.) Implement ArrayFire c++ gaussian (ignore padding)
     \item DONE: (29.01.) Implement VIGRA c++ gaussian (ignore padding)
   \end{itemize}
@@ -95,6 +97,14 @@ showstringspaces=false            %
 
 
 \section{HiWi HCI Notes}
+
+\subsection{08.02.2016 (4h)}
+  \begin{itemize}
+    \item ran python comparison, approx arrayfire speed up of 10, approx opencv speed up of 2
+    \item Sizes range from 256x256 to 10000x10000
+    \item single image convolution is important, yet batching copy operations might be possible
+  \end{itemize}
+  
 
 \subsection{02.02.2016 (2h)}
   Worked on arrayfire c++ implementation. Set up vigra and such on personal notebook.

@@ -3,34 +3,70 @@ import h5py as h5
 import numpy as np
 import time
 import arrayfire as af
+import ctypes as ct
 from scipy.ndimage.filters import gaussian_filter
 
 
-def af_gauss(data,kernels):
-#  data = np.array(data).swapaxes(0,1)
-#  data = data.swapaxes(1,2)
-
+def af_gauss_sigmas_sep(data,sigmas):
   d_kernels = []
-  for k in kernels:
-  #  d_kernels.append(af.np_to_af_array(k))
-    d_k = af.np_to_af_array(k)
-  #  #d_kernels.append(d_k)
-    d_kernels.append(af.matmul(d_k,af.transpose(d_k)))
+  for s in sigmas:
+    csize = ct.c_int(int(3*s + 0.5)*2+1)
+    csigma = ct.c_double(s)
+    d_k = af.Array()
+    af.safe_call(af.backend.get().af_gaussian_kernel(ct.pointer(d_k.arr),csize,1,csigma,ct.c_double(0.0)))
+    d_kernels.append(d_k)
   
-  ##d_k = af.matmul(af.transpose(d_k),d_k)
+  out = []
+  for d in data:
+    d_img = af.np_to_af_array(d)
+
+    for d_k,i in zip(d_kernels,range(len(d_kernels))):
+      res = af.convolve2_separable(d_k, af.transpose(d_k), d_img)
+      # create numpy array
+      out.append(res.__array__())
+
+def af_gauss_sigmas(data,sigmas):
+  d_kernels = []
+  for s in sigmas:
+    csize = ct.c_int(int(3*s + 0.5)*2+1)
+    csigma = ct.c_double(s)
+    d_k = af.Array()
+    af.safe_call(af.backend.get().af_gaussian_kernel(ct.pointer(d_k.arr),csize,csize,csigma,csigma))
+    d_kernels.append(d_k)
+  
+  out = []
   for d in data:
     d_img = af.np_to_af_array(d)
 
     for d_k in d_kernels:
       #res = af.convolve2_separable(d_k, af.transpose(d_k), d_img)
       res = af.convolve2(d_img, d_k)
+      # create numpy array
+      out.append(res.__array__())
 
-def vigra_gauss(data):
-  img = vigra.Image(data)
-  sigmas = [0.7, 1.0, 1.6, 3.5, 5, 10]
+def af_gauss(data,kernels):
+  d_kernels = []
+  for k in kernels:
+    d_k = af.np_to_af_array(k)
+    d_kernels.append(af.matmul(d_k,af.transpose(d_k)))
+  
+  ##d_k = af.matmul(af.transpose(d_k),d_k)
   out = []
-  for sigma in sigmas:
-    out.append(np.asarray(vigra.filters.gaussianSmoothing(img, sigma)))
+  for d in data:
+    d_img = af.np_to_af_array(d)
+
+    for d_k in d_kernels:
+      #res = af.convolve2_separable(d_k, af.transpose(d_k), d_img)
+      res = af.convolve2(d_img, d_k)
+      # create numpy array
+      out.append(res.__array__())
+
+def vigra_gauss(data,sigmas):
+  out = []
+  for d in data:
+    img = vigra.Image(d)
+    for sigma in sigmas:
+      out.append(np.asarray(vigra.filters.gaussianSmoothing(img, sigma)))
 
   return out
 
@@ -50,8 +86,8 @@ def scipy_gauss(data):
 
   return out
 
-def create_image_data():
-  data = [np.random.random((1024,1024)) for i in range(50)]
+def create_image_data(size=1024):
+  data = [np.random.random((size,size)) for i in range(10)]
   return data
 
 def calc_features(data):
@@ -83,13 +119,7 @@ if __name__ == "__main__":
 #  for s in ['slice1', 'slice2']:
 #    f[s + '_fvec'] = calc_features(f[s][:])
 #  f.close()
-  print "Data creation"
-  start = time.clock()
-  data = create_image_data()
-  end = time.clock()
-  print "Time:",end-start
-
-  sigmas = [0.7, 1.0, 1.6, 3.5, 5, 10]
+  sigmas = [0.7, 1.0, 1.6, 3.5, 5]#, 10]
   kernels = [vigra.filters.Kernel1D() for i in range(len(sigmas))]
   for k,s in zip(kernels,sigmas):
     k.initGaussian(s)
@@ -102,18 +132,32 @@ if __name__ == "__main__":
       k1[i] = k[j] 
     npkernels.append(k1)
 
-  print "Fast convolution"
-  start = time.clock()
-  af_gauss(data,npkernels)
-  end = time.clock()
-  print "Time:",end-start
+  # does not work for size > 4000
+  for size in [256,512,1024,2048,3072,3500,3800]:
+    start = time.clock()
+    data = create_image_data(size)
+    end = time.clock()
+    print "Create data, size:",size,"time:",end-start,"s"
 
-  print "Slow convolution"
-  start = time.clock()
-  for d in data:
-    vigra_gauss(d)
-  end = time.clock()
-  print "Time:",end-start
+    start = time.clock()
+    af_gauss_sigmas_sep(data,sigmas)
+    end = time.clock()
+    print "af_gauss_sigmas_sep, time:",end-start,"s"
+
+    start = time.clock()
+    af_gauss_sigmas(data,sigmas)
+    end = time.clock()
+    print "af_gauss_sigmas, time:",end-start,"s"
+
+    start = time.clock()
+    af_gauss(data,npkernels)
+    end = time.clock()
+    print "af_gauss, time:",end-start,"s"
+
+    start = time.clock()
+    vigra_gauss(data,sigmas)
+    end = time.clock()
+    print "vigra_gauss, time:",end-start,"s"
 
 #  # compare data
 #  for v,s in zip(vout,sout):

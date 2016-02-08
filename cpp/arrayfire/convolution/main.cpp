@@ -69,8 +69,13 @@ int main(int argc, char **argv){
 	printf("create data: %.5f seconds\n", timeit(create_data));
 
         // setup image and device copies of kernels
+	timer::start();
         img = randu(3072, 3072);
+        printf("Create image:         %.5f seconds\n", timer::stop());
         printf("full 2D convolution (N = %d):         %.5f seconds\n", N, timeit(full)/N);
+	timer::start();
+	full();
+        printf("full 2D convolution (N = %d):         %.5f seconds\n", N, timer::stop()/N);
         //printf("separable, device pointers (N = %d):  %.5f seconds\n", N, timeit(dsep)/N);
         // ensure values are all the same across versions
         //if (fail(full_out, dsep_out)) { throw af::exception("full != dsep"); }

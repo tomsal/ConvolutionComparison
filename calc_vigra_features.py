@@ -9,7 +9,7 @@ from scipy.ndimage.filters import gaussian_filter
 
 
 def check(name,epsilon):
-  if epsilon > 1e-5:
+  if epsilon > 1e-4:
     print "### Not matching for:",name
     print "### Error:",epsilon
 
@@ -140,7 +140,7 @@ if __name__ == "__main__":
 #  for s in ['slice1', 'slice2']:
 #    f[s + '_fvec'] = calc_features(f[s][:])
 #  f.close()
-  sigmas = np.array([0.7, 1.0, 1.6, 3.5, 5]) #, 10])
+  sigmas = np.array([0.7, 1.0, 1.6, 3.5, 5]) # , 10])
   kernels = [vigra.filters.Kernel1D() for i in range(len(sigmas))]
   for k,s in zip(kernels,sigmas):
     k.initGaussian(s)
@@ -154,7 +154,8 @@ if __name__ == "__main__":
     npkernels.append(k1)
 
   # does not work for size > 4000 on my notebook
-  for size in [256,1024,2048,3072, 3500,4096,4500,5120]:
+  for size in [256,1024,2048,3072, 3500,4096,4500,5120,10000]:
+    print "--------------------------------"
     start = time.clock()
     data = create_image_data(size,1)
     end = time.clock()
@@ -168,22 +169,22 @@ if __name__ == "__main__":
     start = time.clock()
     af1 = af_gauss_sigmas(data,sigmas)
     end = time.clock()
-    print "af_gauss_sigmas, time:",end-start,"s"
+    print "af_gauss_sigmas\ttime:",end-start,"s"
 
     start = time.clock()
     af2 = af_gauss(data,npkernels)
     end = time.clock()
-    print "af_gauss, time:",end-start,"s"
+    print "af_gauss\ttime:",end-start,"s"
 
     start = time.clock()
     cv1 = cv2_gauss(data,sigmas)
     end = time.clock()
-    print "opencv_gauss, time:",end-start,"s"
+    print "opencv_gauss\ttime:",end-start,"s"
 
     start = time.clock()
     vg1 = vigra_gauss(data,sigmas)
     end = time.clock()
-    print "vigra_gauss, time:",end-start,"s"
+    print "vigra_gauss\ttime:",end-start,"s"
 
     print "Compare data"
     # arrayfire seems todo 0 padding

@@ -56,26 +56,23 @@ int main(int argc, char **argv){
         af::setDevice(device);
         af::info();
 
-        N = argc > 1 ? atoi(argv[1]) : 100;
+        N = argc > 2 ? atoi(argv[2]) : 100;
 
 	// kernel computation
 	//dx = array(5, 1, h_dx); // 5x1 kernel
 	//dx = gaussianKernel(17,0,2.66,0.0); // 17x1 kernel
-	kernel = gaussianKernel(17,17,2.66,2.66);
+	kernel = gaussianKernel(61,61,10.0,10.0);
 	
 	//spread = array(1, 5, h_spread); // 1x5 kernel
 	//spread = gaussianKernel(0,17,0.0,2.66); // 1x17 kernel
 	//kernel = matmul(dx, spread); // 5x5 kernel
-	printf("create data: %.5f seconds\n", timeit(create_data));
+	printf("create 1s image: %.5f seconds\n", timeit(create_data));
 
         // setup image and device copies of kernels
 	timer::start();
         img = randu(3072, 3072);
-        printf("Create image:         %.5f seconds\n", timer::stop());
+        printf("Create random image:         %.5f seconds\n", timer::stop());
         printf("full 2D convolution (N = %d):         %.5f seconds\n", N, timeit(full)/N);
-	timer::start();
-	full();
-        printf("full 2D convolution (N = %d):         %.5f seconds\n", N, timer::stop()/N);
         //printf("separable, device pointers (N = %d):  %.5f seconds\n", N, timeit(dsep)/N);
         // ensure values are all the same across versions
         //if (fail(full_out, dsep_out)) { throw af::exception("full != dsep"); }

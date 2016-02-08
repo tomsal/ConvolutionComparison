@@ -4,8 +4,14 @@ import numpy as np
 import time
 import arrayfire as af
 import ctypes as ct
+import cv2
 from scipy.ndimage.filters import gaussian_filter
 
+
+def check(name,epsilon):
+  if epsilon > 1e-5:
+    print "### Not matching for:",name
+    print "### Error:",epsilon
 
 def af_gauss_sigmas_sep(data,sigmas):
   d_kernels = []
@@ -24,6 +30,7 @@ def af_gauss_sigmas_sep(data,sigmas):
       res = af.convolve2_separable(d_k, af.transpose(d_k), d_img)
       # create numpy array
       out.append(res.__array__())
+  return out
 
 def af_gauss_sigmas(data,sigmas):
   d_kernels = []
@@ -43,6 +50,7 @@ def af_gauss_sigmas(data,sigmas):
       res = af.convolve2(d_img, d_k)
       # create numpy array
       out.append(res.__array__())
+  return out
 
 def af_gauss(data,kernels):
   d_kernels = []
@@ -60,6 +68,16 @@ def af_gauss(data,kernels):
       res = af.convolve2(d_img, d_k)
       # create numpy array
       out.append(res.__array__())
+  return out
+
+def cv2_gauss(data,sigmas):
+  out = []
+  sigmasizes = ((3*sigmas+0.5).astype(int)*2+1)
+  for d in data:
+    for sigma,sigmasize in zip(sigmas,sigmasizes):
+      out.append(cv2.GaussianBlur(d,(sigmasize,sigmasize),sigma))
+
+  return out
 
 def vigra_gauss(data,sigmas):
   out = []
@@ -86,8 +104,8 @@ def scipy_gauss(data):
 
   return out
 
-def create_image_data(size=1024):
-  data = [np.random.random((size,size)) for i in range(10)]
+def create_image_data(size=1024,N=1):
+  data = [np.random.random((size,size)) for i in range(N)]
   return data
 
 def calc_features(data):
@@ -115,11 +133,14 @@ def calc_features(data):
   return features
 
 if __name__ == "__main__":
+  af.set_device(2)
+  af.info()
+
 #  f = h5.File('data_droso.h5')
 #  for s in ['slice1', 'slice2']:
 #    f[s + '_fvec'] = calc_features(f[s][:])
 #  f.close()
-  sigmas = [0.7, 1.0, 1.6, 3.5, 5]#, 10]
+  sigmas = np.array([0.7, 1.0, 1.6, 3.5, 5]) #, 10])
   kernels = [vigra.filters.Kernel1D() for i in range(len(sigmas))]
   for k,s in zip(kernels,sigmas):
     k.initGaussian(s)
@@ -132,48 +153,44 @@ if __name__ == "__main__":
       k1[i] = k[j] 
     npkernels.append(k1)
 
-  # does not work for size > 4000
-  for size in [256,512,1024,2048,3072,3500,3800]:
+  # does not work for size > 4000 on my notebook
+  for size in [256,1024,2048,3072, 3500,4096,4500,5120]:
     start = time.clock()
-    data = create_image_data(size)
+    data = create_image_data(size,1)
     end = time.clock()
     print "Create data, size:",size,"time:",end-start,"s"
 
     start = time.clock()
-    af_gauss_sigmas_sep(data,sigmas)
+    af0 = af_gauss_sigmas_sep(data,sigmas)
     end = time.clock()
     print "af_gauss_sigmas_sep, time:",end-start,"s"
 
     start = time.clock()
-    af_gauss_sigmas(data,sigmas)
+    af1 = af_gauss_sigmas(data,sigmas)
     end = time.clock()
     print "af_gauss_sigmas, time:",end-start,"s"
 
     start = time.clock()
-    af_gauss(data,npkernels)
+    af2 = af_gauss(data,npkernels)
     end = time.clock()
     print "af_gauss, time:",end-start,"s"
 
     start = time.clock()
-    vigra_gauss(data,sigmas)
+    cv1 = cv2_gauss(data,sigmas)
+    end = time.clock()
+    print "opencv_gauss, time:",end-start,"s"
+
+    start = time.clock()
+    vg1 = vigra_gauss(data,sigmas)
     end = time.clock()
     print "vigra_gauss, time:",end-start,"s"
 
-#  # compare data
-#  for v,s in zip(vout,sout):
-#    print np.linalg.norm(v-s)
-
-### compare scipy and vigra
-#  for d in data:
-#    start = time.clock()
-#    vout = vigra_gauss(d)
-#    end = time.clock()
-#    print "Vigra time:",end-start
-#    start = time.clock()
-#    sout = scipy_gauss(d)
-#    end = time.clock()
-#    print "Scipy time:",end-start
-#
-#    # compare data
-#    for v,s in zip(vout,sout):
-#      print np.linalg.norm(v-s)
+    print "Compare data"
+    # arrayfire seems todo 0 padding
+    # compare data
+    for a0,a1,a2,c1,v1 in zip(af0,af1,af2,cv1,vg1):
+      check('af0',np.linalg.norm(v1[100:110,100:110]-a0[100:110,100:110]))
+      check('af1',np.linalg.norm(v1[100:110,100:110]-a1[100:110,100:110]))
+      check('af2',np.linalg.norm(v1[100:110,100:110]-a2[100:110,100:110]))
+      check('cv1',np.linalg.norm(v1[100:110,100:110]-c1[100:110,100:110]))
+      check('vg1',np.linalg.norm(v1[100:110,100:110]-v1[100:110,100:110]))

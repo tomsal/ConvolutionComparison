@@ -19,25 +19,26 @@ using namespace af;
 static array img;
 
 // 5x5 derivative with separable kernels
-static float h_dx[] = {1.f / 12, -8.f / 12, 0, 8.f / 12, -1.f / 12}; // five point stencil
-static float h_spread[] = {1.f / 5, 1.f / 5, 1.f / 5, 1.f / 5, 1.f / 5};
+//static float h_dx[] = {1.f / 12, -8.f / 12, 0, 8.f / 12, -1.f / 12}; // five point stencil
+//static float h_spread[] = {1.f / 5, 1.f / 5, 1.f / 5, 1.f / 5, 1.f / 5};
 static float h_img[9437184];
-static array dx, spread, kernel; // device kernels
+static float h_out[9437184];
+static array dx, spread;
+static array kernel; // device kernels
 static array full_out, dsep_out, hsep_out; // save output for value checks
 static int N = 0;
 
 // wrapper functions for timeit() below
 static void full() { 
-  for(int i = 0; i < N; i++){
-    img = array(3072,3072,h_img);
-    full_out = convolve2(img, kernel);
-  }
+  img = array(3072,3072,h_img);
+  full_out = convolve2(img, kernel);
+  full_out.host((void*)&h_out[0]);
 }
 
 static void dsep() { 
-  for(int i = 0; i < N; i++){
-    dsep_out = convolve(dx, spread, img);
-  }
+  img = array(3072,3072,h_img);
+  dsep_out = convolve(spread, dx, img);
+  dsep_out.host((void*)&h_out[0]);
 }
 
 static void create_data(){
@@ -56,24 +57,24 @@ int main(int argc, char **argv){
         af::setDevice(device);
         af::info();
 
-        N = argc > 2 ? atoi(argv[2]) : 100;
+        //N = argc > 2 ? atoi(argv[2]) : 100;
 
-	// kernel computation
-	//dx = array(5, 1, h_dx); // 5x1 kernel
-	//dx = gaussianKernel(17,0,2.66,0.0); // 17x1 kernel
-	kernel = gaussianKernel(61,61,10.0,10.0);
-	
-	//spread = array(1, 5, h_spread); // 1x5 kernel
-	//spread = gaussianKernel(0,17,0.0,2.66); // 1x17 kernel
-	//kernel = matmul(dx, spread); // 5x5 kernel
-	printf("create 1s image: %.5f seconds\n", timeit(create_data));
+        // kernel computation
+        //dx = array(5, 1, h_dx); // 5x1 kernel
+        dx = gaussianKernel(11,1,10.0,0.0); // 17x1 kernel
+        kernel = gaussianKernel(61,61,10.0,10.0);
+        
+        //spread = array(1, 5, h_spread); // 1x5 kernel
+        spread = gaussianKernel(1,11,0.0,10.0); // 1x17 kernel
+        //kernel = matmul(dx, spread); // 5x5 kernel
+        printf("create 1s image: %.5f seconds\n", timeit(create_data));
 
         // setup image and device copies of kernels
-	timer::start();
+        timer::start();
         img = randu(3072, 3072);
         printf("Create random image:         %.5f seconds\n", timer::stop());
-        printf("full 2D convolution (N = %d):         %.5f seconds\n", N, timeit(full)/N);
-        //printf("separable, device pointers (N = %d):  %.5f seconds\n", N, timeit(dsep)/N);
+        printf("full 2D convolution (N = %d):         %.5f seconds\n", N, timeit(full));
+        printf("separable, device pointers (N = %d):  %.5f seconds\n", N, timeit(dsep));
         // ensure values are all the same across versions
         //if (fail(full_out, dsep_out)) { throw af::exception("full != dsep"); }
     } catch (af::exception& e) {

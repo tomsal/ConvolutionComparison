@@ -7,6 +7,7 @@
 #include <vigra/multi_array.hxx>
 #include <vigra/hdf5impex.hxx>
 #include <vigra/multi_convolution.hxx>
+#include <vigra/random.hxx>
 
 #define BILLION 1E9
 
@@ -30,17 +31,21 @@ float max_array(float* arr, int length){
 }
 
 main(int argc, char ** argv){
-  float sigma = 2.66;
+  float sigma = 10.0;
   int h = 3072;
   int w = 3072;
 
    //vigra 
   char* in_filename = argv[1];
   ImageImportInfo imageInfo(in_filename);
-  MultiArray<2, float> imageArray(imageInfo.shape());
-  MultiArray<2, float> resultArray(imageInfo.shape());
+  MultiArray<2, float> imageArray(Shape2(3072,3072));//imageInfo.shape());
+  MultiArray<2, float> resultArray(Shape2(3072,3072));//imageInfo.shape());
 
-  importImage(imageInfo, imageArray);
+  MersenneTwister random;
+  //importImage(imageInfo, imageArray);
+  for(int i = 0; i < 3072; i++)
+    for(int j = 0; j < 3072; j++)
+      imageArray(i,j) = random.uniform();
 
   //speed comparison
 
@@ -54,6 +59,7 @@ main(int argc, char ** argv){
 
   std::cout << "Convolution using Sigma:" << sigma <<std::endl;
   for(int i=1; i<=rep; i++){
+    std::cout << "Iteration: " << i << "\n";
     clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &start);
     gaussianSmoothing(imageArray, resultArray, sigma);
     /*MultiArray<2, float> tmp(imageInfo.shape());

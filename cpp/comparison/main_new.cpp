@@ -1,7 +1,5 @@
-//#include <stdio.h>
-//#include <cstdlib>
 #include <iostream>
-#include <map>
+#include <vector>
 
 #include <arrayfire.h>
 
@@ -48,6 +46,12 @@ int main(int argc, char* argv[]){
   const int device = options.count("device") ? options["device"].as<int>() : 0;
   // --- End command line parsing ---
 
+  // select GPU device
+  af::setDevice(device);
+
+  // create timer object
+  boost::timer::auto_cpu_timer timer;
+
   // --- Start create input image
   float* h_img = (float*) malloc(sizeof(float)*size*size); // random input image
   try{
@@ -60,25 +64,58 @@ int main(int argc, char* argv[]){
   }
   // --- End create input image
 
-  // select GPU device
-  af::setDevice(device);
+  // load vigra image
+  vigra::MultiArray<2, float> v_img(vigra::Shape2(size,size));
+  for(int i = 0; i < size; i++)
+    for(int j = 0; j < size; j++)
+      imageArray(i,j) = h_img[i+j*size];
+  // vigra convolution result
+  vigra::MultiArray<2, float> v_result(vigra::Shape2(size,size));
 
-  // create timer object
-  boost::timer::auto_cpu_timer timer;
-
-  // map for timings
+  // arrayfire arrays
+  af::array d_img; // input image
+  af::array d_result; // convolution result
+  float* h_result = (float*) malloc(sizeof(float)*size*size); // af convolution result host
 
   // create kernel for arrayfire that equals vigra kernel
   timer.start();
     const int ksize = int(sigma*3 + 0.5)*2 + 1;
-    af::array gaussianKernel = af::gaussianKernel(ksize,ksize,sigma,sigma);
+    af::array d_kernel = af::gaussianKernel(ksize,ksize,sigma,sigma);
   timer.stop();
-  float k_time = boost::lexical_cast<float>(timer.format(8,"%w"));
+  float t_kernel = boost::lexical_cast<float>(timer.format(8,"%w"));
+
+  // --- Start measurement loop ---
+  std::vector<float> ts_af_copy_hd;
+  std::vector<float> ts_af_convolve;
+  std::vector<float> ts_af_copy_dh;
+  std::vector<float> ts_vigra;
+  for(int i = 0; i < N; ++i){
+    // --- Start af measurements ---
+    // Create device array, i.e. copy h_img to GPU memory
+    timer.start();
+      d_img = af::array(size,size,h_img);
+    timer.stop();
+    ts_af_copy_hd.pushback(boost::lexical_cast<float>(timer.format(8,"%w"));
+
+    timer.start();
+      d_result = af::convolve2(d_img,d_kernel);
+    timer.stop();
+    ts_af_convolve.pushback(boost::lexical_cast<float>(timer.format(8,"%w"));
+
+    timer.start();
+      d_result.host((void*)&h_result);
+    timer.stop();
+    ts_af_copy_dh.pushback(boost::lexical_cast<float>(timer.format(8,"%w"));
+    // --- End af measurements ---
+
+    // --- Start vigra measurements ---
+    // --- End vigra measurements ---
+  }
 
   std::cout << "Time: " << k_time << "\n";
 
   float* h_out = (float*) malloc(sizeof(float)*size*size); // convolution out
-  std::cout << "Image size:" << size << "\n";
+  std::cout << "Image size: " << size << "\n";
 
   return 0;
 }

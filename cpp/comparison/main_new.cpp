@@ -12,6 +12,12 @@
 #include <vigra/multi_convolution.hxx>
 #include <vigra/random.hxx>
 
+#include "boost/bind.hpp"
+#include "boost/ref.hpp"
+#include "boost/accumulators/accumulators.hpp"
+#include "boost/accumulators/statistics/stats.hpp"
+#include "boost/accumulators/statistics/mean.hpp"
+#include "boost/accumulators/statistics/variance.hpp"
 #include "boost/program_options.hpp"
 #include "boost/timer/timer.hpp"
 
@@ -46,6 +52,13 @@ int main(int argc, char* argv[]){
   const int device = options.count("device") ? options["device"].as<int>() : 0;
   // --- End command line parsing ---
 
+  if(!raw){
+    std::cout << "Size: " << size << "\n";
+    std::cout << "N: " << N << "\n";
+    std::cout << "Sigma: " << sigma << "\n";
+    std::cout << "Device: " << device << "\n";
+  }
+
   // select GPU device
   af::setDevice(device);
 
@@ -68,7 +81,7 @@ int main(int argc, char* argv[]){
   vigra::MultiArray<2, float> v_img(vigra::Shape2(size,size));
   for(int i = 0; i < size; i++)
     for(int j = 0; j < size; j++)
-      imageArray(i,j) = h_img[i+j*size];
+      v_img(i,j) = h_img[i+j*size];
   // vigra convolution result
   vigra::MultiArray<2, float> v_result(vigra::Shape2(size,size));
 
@@ -84,6 +97,9 @@ int main(int argc, char* argv[]){
   timer.stop();
   float t_kernel = boost::lexical_cast<float>(timer.format(8,"%w"));
 
+  if(!raw)
+    std::cout << "Starting measurement loop\n";
+
   // --- Start measurement loop ---
   std::vector<float> ts_af_copy_hd;
   std::vector<float> ts_af_convolve;
@@ -95,24 +111,37 @@ int main(int argc, char* argv[]){
     timer.start();
       d_img = af::array(size,size,h_img);
     timer.stop();
-    ts_af_copy_hd.pushback(boost::lexical_cast<float>(timer.format(8,"%w"));
+    ts_af_copy_hd.push_back(boost::lexical_cast<float>(timer.format(8,"%w")));
 
     timer.start();
       d_result = af::convolve2(d_img,d_kernel);
     timer.stop();
-    ts_af_convolve.pushback(boost::lexical_cast<float>(timer.format(8,"%w"));
+    ts_af_convolve.push_back(boost::lexical_cast<float>(timer.format(8,"%w")));
 
     timer.start();
-      d_result.host((void*)&h_result);
+      d_result.host((void*)&h_result[0]);
     timer.stop();
-    ts_af_copy_dh.pushback(boost::lexical_cast<float>(timer.format(8,"%w"));
+    ts_af_copy_dh.push_back(boost::lexical_cast<float>(timer.format(8,"%w")));
     // --- End af measurements ---
 
     // --- Start vigra measurements ---
+    timer.start();
+      vigra::gaussianSmoothing(v_img, v_result, sigma);
+    timer.stop();
+    ts_vigra.push_back(boost::lexical_cast<float>(timer.format(8,"%w")));
     // --- End vigra measurements ---
   }
 
-  std::cout << "Time: " << k_time << "\n";
+  if(!raw)
+    std::cout << "Finished measurements. Evaluating...\n";
+
+  namespace accus = boost::accumulators;
+  accus::accumulator_set<float, accus::stats<accus::tag::variance> > acc;
+  std::for_each( ts_af_copy_hd.begin(), ts_af_copy_hd.end(), 
+		  boost::bind<void>( boost::ref(acc), _1 ) );
+
+  std::cout << "Mean = " << accus::mean(acc) << "\n";
+  std::cout << "Variance = " << accus::variance(acc) << "\n";
 
   float* h_out = (float*) malloc(sizeof(float)*size*size); // convolution out
   std::cout << "Image size: " << size << "\n";

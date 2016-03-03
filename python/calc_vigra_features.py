@@ -47,9 +47,8 @@ def af_gaussianDerivative1D(s,order):
     return afx/(s**4)*d_k
   return d_k
 
-def af_gaussian2D(sigma):
-  # TODO: remove 0.5?
-  csize = ct.c_int(int(3*s + 0.5)*2+1)
+def af_gaussian2D(s):
+  csize = ct.c_int(int(3*s)*2+1)
   csigma = ct.c_double(s)
   d_k = af.Array()
   af.safe_call(af.backend.get().af_gaussian_kernel(ct.pointer(d_k.arr),csize,csize,csigma,csigma))

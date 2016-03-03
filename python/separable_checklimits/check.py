@@ -31,39 +31,35 @@ def af_gaussian2D(s):
 
 if __name__ == "__main__":
   parser = argparse.ArgumentParser(description='Run convolution comparison measurements.')
+  parser.add_argument("--error", help="Show only failed attempts/errors. Default: false",action="store_true")
   parser.add_argument("--mode", help="Mode of convolution. Common 2D (2D) or separable 2D (sep). Default: 2D",default="2D",type=str)
   parser.add_argument("--device", help="Select GPU device number. Default: 0",default=0,type=int)
 
   args = parser.parse_args()
 
   print "--- Parameters ---"
+  print "\tError:",args.error
   print "\tMode:",args.mode
   print "\tDevice:",args.device
 
   af.set_device(args.device)
+  af.info()
 
   sizes = [256,512,1024,2048,3072,4096,5120]
   sigmas = [0.7,1.0,2.0,3.0,4.0,5.0,6.0,7.0,8.0,9.0,10.0]
 
-  if args.mode == "2D":
-    for size in sizes:
-      afimg = af.randu(size,size)
-      for sigma in sigmas:
-	try:
+  for size in sizes:
+    afimg = af.randu(size,size)
+    for sigma in sigmas:
+      try:
+	if args.mode == "2D":
 	  afk = af_gaussian2D(sigma)
 	  afres = af.convolve(afk,afimg)
-	  print "OK: size =",size," -- sigma =",sigma 
-	except:
-	  print "ERROR: size =",size," -- sigma =",sigma 
-
-  if args.mode == "sep":
-    for size in sizes:
-      afimg = af.randu(size,size)
-      for sigma in sigmas:
-	try:
+	if args.mode == "sep":
 	  afk = af_gaussianDerivative1D(sigma,0)
 	  afres = af.convolve2_separable(afk, af.transpose(afk), afimg)
-	  print "OK: size =",size," -- sigma =",sigma 
-	except:
-	  print "ERROR: size =",size," -- sigma =",sigma 
+	if not args.error:
+	  print "OK: size =",size,"-- sigma =",sigma,"-- kernel_size =",2*int(3*sigma)+1
+      except Exception as e:
+	print "ERROR:",e," # size =",size,"-- sigma =",sigma,"-- kernel_size =",2*int(3*sigma)+1
 

@@ -1,0 +1,146 @@
+tommy:separable_checklimits/ (master) $ ./a.out --mode 2D --error                                                                                                                                [I]
+--- Parameters ---
+        Error: 1
+        Mode: 2D
+        Device: 0
+ArrayFire v3.2.2 (CUDA, 64-bit Linux, build 7507b61)
+Platform: CUDA Toolkit 7.5, Driver: 352.39
+[0] GeForce GT 635M, 2048 MB, CUDA Compute 2.1
+ERROR: 998 # size = 4096 -- sigma = 3 -- kernel_size = 19
+ERROR: 998 # size = 4096 -- sigma = 4 -- kernel_size = 25
+ERROR: 998 # size = 4096 -- sigma = 5 -- kernel_size = 31
+ERROR: 998 # size = 4096 -- sigma = 6 -- kernel_size = 37
+ERROR: 998 # size = 4096 -- sigma = 7 -- kernel_size = 43
+ERROR: 998 # size = 4096 -- sigma = 8 -- kernel_size = 49
+ERROR: 998 # size = 4096 -- sigma = 9 -- kernel_size = 55
+ERROR: 998 # size = 4096 -- sigma = 10 -- kernel_size = 61
+ERROR: 998 # size = 5120 -- sigma = 3 -- kernel_size = 19
+ERROR: 998 # size = 5120 -- sigma = 4 -- kernel_size = 25
+ERROR: 998 # size = 5120 -- sigma = 5 -- kernel_size = 31
+ERROR: 998 # size = 5120 -- sigma = 6 -- kernel_size = 37
+ERROR: 998 # size = 5120 -- sigma = 7 -- kernel_size = 43
+ERROR: 998 # size = 5120 -- sigma = 8 -- kernel_size = 49
+ERROR: 998 # size = 5120 -- sigma = 9 -- kernel_size = 55
+ERROR: 998 # size = 5120 -- sigma = 10 -- kernel_size = 61
+
+
+tommy:separable_checklimits/ (master) $ ./a.out --mode sep --error                                                                                                                               [I]
+--- Parameters ---
+        Error: 1
+        Mode: sep
+        Device: 0
+ArrayFire v3.2.2 (CUDA, 64-bit Linux, build 7507b61)
+Platform: CUDA Toolkit 7.5, Driver: 352.39
+[0] GeForce GT 635M, 2048 MB, CUDA Compute 2.1
+ERROR: 301 # size = 256 -- sigma = 6 -- kernel_size = 37
+ERROR: 301 # size = 256 -- sigma = 7 -- kernel_size = 43
+ERROR: 301 # size = 256 -- sigma = 8 -- kernel_size = 49
+ERROR: 301 # size = 256 -- sigma = 9 -- kernel_size = 55
+ERROR: 301 # size = 256 -- sigma = 10 -- kernel_size = 61
+ERROR: 301 # size = 512 -- sigma = 6 -- kernel_size = 37
+ERROR: 301 # size = 512 -- sigma = 7 -- kernel_size = 43
+ERROR: 301 # size = 512 -- sigma = 8 -- kernel_size = 49
+ERROR: 301 # size = 512 -- sigma = 9 -- kernel_size = 55
+ERROR: 301 # size = 512 -- sigma = 10 -- kernel_size = 61
+ERROR: 301 # size = 1024 -- sigma = 6 -- kernel_size = 37
+ERROR: 301 # size = 1024 -- sigma = 7 -- kernel_size = 43
+ERROR: 301 # size = 1024 -- sigma = 8 -- kernel_size = 49
+ERROR: 301 # size = 1024 -- sigma = 9 -- kernel_size = 55
+ERROR: 301 # size = 1024 -- sigma = 10 -- kernel_size = 61
+ERROR: 301 # size = 2048 -- sigma = 6 -- kernel_size = 37
+ERROR: 301 # size = 2048 -- sigma = 7 -- kernel_size = 43
+ERROR: 301 # size = 2048 -- sigma = 8 -- kernel_size = 49
+ERROR: 301 # size = 2048 -- sigma = 9 -- kernel_size = 55
+ERROR: 301 # size = 2048 -- sigma = 10 -- kernel_size = 61
+ERROR: 301 # size = 3072 -- sigma = 6 -- kernel_size = 37
+ERROR: 301 # size = 3072 -- sigma = 7 -- kernel_size = 43
+ERROR: 301 # size = 3072 -- sigma = 8 -- kernel_size = 49
+ERROR: 301 # size = 3072 -- sigma = 9 -- kernel_size = 55
+ERROR: 301 # size = 3072 -- sigma = 10 -- kernel_size = 61
+ERROR: 301 # size = 4096 -- sigma = 6 -- kernel_size = 37
+ERROR: 301 # size = 4096 -- sigma = 7 -- kernel_size = 43
+ERROR: 301 # size = 4096 -- sigma = 8 -- kernel_size = 49
+ERROR: 301 # size = 4096 -- sigma = 9 -- kernel_size = 55
+ERROR: 301 # size = 4096 -- sigma = 10 -- kernel_size = 61
+ERROR: 301 # size = 5120 -- sigma = 6 -- kernel_size = 37
+ERROR: 301 # size = 5120 -- sigma = 7 -- kernel_size = 43
+ERROR: 301 # size = 5120 -- sigma = 8 -- kernel_size = 49
+ERROR: 301 # size = 5120 -- sigma = 9 -- kernel_size = 55
+ERROR: 301 # size = 5120 -- sigma = 10 -- kernel_size = 61
+
+
+tommy:separable_checklimits/ (master) $ python check.py --mode 2D --error                                                                                                                        [I]
+--- Parameters ---
+        Error: True
+        Mode: 2D
+        Device: 0
+ArrayFire v3.2.2 (CUDA, 64-bit Linux, build 7507b61)
+Platform: CUDA Toolkit 7.5, Driver: 352.39
+[0] GeForce GT 635M, 2048 MB, CUDA Compute 2.1
+ERROR: ('', 998)  # size = 4096 -- sigma = 0.7 -- kernel_size = 5
+ERROR: ('', 998)  # size = 4096 -- sigma = 1.0 -- kernel_size = 7
+ERROR: ('', 998)  # size = 4096 -- sigma = 2.0 -- kernel_size = 13
+ERROR: ('', 998)  # size = 4096 -- sigma = 3.0 -- kernel_size = 19
+ERROR: ('', 998)  # size = 4096 -- sigma = 4.0 -- kernel_size = 25
+ERROR: ('', 998)  # size = 4096 -- sigma = 5.0 -- kernel_size = 31
+ERROR: ('', 998)  # size = 4096 -- sigma = 6.0 -- kernel_size = 37
+ERROR: ('', 998)  # size = 4096 -- sigma = 7.0 -- kernel_size = 43
+ERROR: ('', 998)  # size = 4096 -- sigma = 8.0 -- kernel_size = 49
+ERROR: ('', 998)  # size = 4096 -- sigma = 9.0 -- kernel_size = 55
+ERROR: ('', 998)  # size = 4096 -- sigma = 10.0 -- kernel_size = 61
+ERROR: ('', 998)  # size = 5120 -- sigma = 0.7 -- kernel_size = 5
+ERROR: ('', 998)  # size = 5120 -- sigma = 1.0 -- kernel_size = 7
+ERROR: ('', 998)  # size = 5120 -- sigma = 2.0 -- kernel_size = 13
+ERROR: ('', 998)  # size = 5120 -- sigma = 3.0 -- kernel_size = 19
+ERROR: ('', 998)  # size = 5120 -- sigma = 4.0 -- kernel_size = 25
+ERROR: ('', 998)  # size = 5120 -- sigma = 5.0 -- kernel_size = 31
+ERROR: ('', 998)  # size = 5120 -- sigma = 6.0 -- kernel_size = 37
+ERROR: ('', 998)  # size = 5120 -- sigma = 7.0 -- kernel_size = 43
+ERROR: ('', 998)  # size = 5120 -- sigma = 8.0 -- kernel_size = 49
+ERROR: ('', 998)  # size = 5120 -- sigma = 9.0 -- kernel_size = 55
+ERROR: ('', 998)  # size = 5120 -- sigma = 10.0 -- kernel_size = 61
+
+
+tommy:separable_checklimits/ (master) $ python check.py --mode sep --error                                                                                                                       [I]
+--- Parameters ---
+        Error: True
+        Mode: sep
+        Device: 0
+ArrayFire v3.2.2 (CUDA, 64-bit Linux, build 7507b61)
+Platform: CUDA Toolkit 7.5, Driver: 352.39
+[0] GeForce GT 635M, 2048 MB, CUDA Compute 2.1
+ERROR: ('', 301)  # size = 256 -- sigma = 6.0 -- kernel_size = 37
+ERROR: ('', 301)  # size = 256 -- sigma = 7.0 -- kernel_size = 43
+ERROR: ('', 301)  # size = 256 -- sigma = 8.0 -- kernel_size = 49
+ERROR: ('', 301)  # size = 256 -- sigma = 9.0 -- kernel_size = 55
+ERROR: ('', 301)  # size = 256 -- sigma = 10.0 -- kernel_size = 61
+ERROR: ('', 301)  # size = 512 -- sigma = 6.0 -- kernel_size = 37
+ERROR: ('', 301)  # size = 512 -- sigma = 7.0 -- kernel_size = 43
+ERROR: ('', 301)  # size = 512 -- sigma = 8.0 -- kernel_size = 49
+ERROR: ('', 301)  # size = 512 -- sigma = 9.0 -- kernel_size = 55
+ERROR: ('', 301)  # size = 512 -- sigma = 10.0 -- kernel_size = 61
+ERROR: ('', 301)  # size = 1024 -- sigma = 6.0 -- kernel_size = 37
+ERROR: ('', 301)  # size = 1024 -- sigma = 7.0 -- kernel_size = 43
+ERROR: ('', 301)  # size = 1024 -- sigma = 8.0 -- kernel_size = 49
+ERROR: ('', 301)  # size = 1024 -- sigma = 9.0 -- kernel_size = 55
+ERROR: ('', 301)  # size = 1024 -- sigma = 10.0 -- kernel_size = 61
+ERROR: ('', 301)  # size = 2048 -- sigma = 6.0 -- kernel_size = 37
+ERROR: ('', 301)  # size = 2048 -- sigma = 7.0 -- kernel_size = 43
+ERROR: ('', 301)  # size = 2048 -- sigma = 8.0 -- kernel_size = 49
+ERROR: ('', 301)  # size = 2048 -- sigma = 9.0 -- kernel_size = 55
+ERROR: ('', 301)  # size = 2048 -- sigma = 10.0 -- kernel_size = 61
+ERROR: ('', 301)  # size = 3072 -- sigma = 6.0 -- kernel_size = 37
+ERROR: ('', 301)  # size = 3072 -- sigma = 7.0 -- kernel_size = 43
+ERROR: ('', 301)  # size = 3072 -- sigma = 8.0 -- kernel_size = 49
+ERROR: ('', 301)  # size = 3072 -- sigma = 9.0 -- kernel_size = 55
+ERROR: ('', 301)  # size = 3072 -- sigma = 10.0 -- kernel_size = 61
+ERROR: ('', 301)  # size = 4096 -- sigma = 6.0 -- kernel_size = 37
+ERROR: ('', 301)  # size = 4096 -- sigma = 7.0 -- kernel_size = 43
+ERROR: ('', 301)  # size = 4096 -- sigma = 8.0 -- kernel_size = 49
+ERROR: ('', 301)  # size = 4096 -- sigma = 9.0 -- kernel_size = 55
+ERROR: ('', 301)  # size = 4096 -- sigma = 10.0 -- kernel_size = 61
+ERROR: ('', 301)  # size = 5120 -- sigma = 6.0 -- kernel_size = 37
+ERROR: ('', 301)  # size = 5120 -- sigma = 7.0 -- kernel_size = 43
+ERROR: ('', 301)  # size = 5120 -- sigma = 8.0 -- kernel_size = 49
+ERROR: ('', 301)  # size = 5120 -- sigma = 9.0 -- kernel_size = 55
+ERROR: ('', 301)  # size = 5120 -- sigma = 10.0 -- kernel_size = 61

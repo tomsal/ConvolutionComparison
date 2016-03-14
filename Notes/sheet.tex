@@ -146,7 +146,7 @@ showstringspaces=false            %
 
     Show vigra compiler options
     \begin{lstlisting}[style=BashInputStyle]
-    # vigra-config --cpp-flags --libs 
+# vigra-config --cpp-flags --libs 
     \end{lstlisting}
 
 \subsection{26.01.2016 (3h)}
@@ -155,15 +155,15 @@ showstringspaces=false            %
 
   \subsubsection{snippets}
     \begin{python}[caption="print out gaussian 1D kernel"]
-      import vigra
+import vigra
 
-      sigma = 3
+sigma = 3
 
-      kernel = vigra.filters.Kernel1D()
-      kernel.initGaussian(sigma)
-      
-      for i in range(kernel.left(),kernel.right()+1):
-	print kernel[i]
+kernel = vigra.filters.Kernel1D()
+kernel.initGaussian(sigma)
+
+for i in range(kernel.left(),kernel.right()+1):
+  print kernel[i]
     \end{python}
 
   \subsubsection{Addresses}
@@ -186,9 +186,9 @@ showstringspaces=false            %
   \subsubsection{Commands}
 
     \begin{lstlisting}[style=BashInputStyle]
-    # source miniconda2/bin/activate ilastik-devel \\
-    # source miniconda2/bin/activate root \\
-    # conda create -n ilastik-devel -c ilastik ilastik-everything-but-tracking
+# source miniconda2/bin/activate ilastik-devel
+# source miniconda2/bin/activate root
+# conda create -n ilastik-devel -c ilastik ilastik-everything-but-tracking
     \end{lstlisting}
 
 \end{document}

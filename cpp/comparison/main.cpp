@@ -9,6 +9,7 @@
 #include <vigra/multi_array.hxx>
 #include <vigra/hdf5impex.hxx>
 #include <vigra/multi_convolution.hxx>
+#include <vigra/multi_blockwise.hxx>
 #include <vigra/random.hxx>
 
 #include "boost/accumulators/accumulators.hpp"
@@ -126,9 +127,12 @@ int main(int argc, char* argv[]){
     acc_af_cpy_dh(boost::lexical_cast<float>(timer.format(8,"%w")));
     // --- End af measurements ---
 
+    vigra::blockwise::BlockwiseConvolutionOptions<2> opt;
+    opt.innerScale(sigma);
+    opt.setNumThreads(4);
     // --- Start vigra measurements ---
     timer.start();
-      vigra::gaussianSmoothing(v_img, v_result, sigma);
+      vigra::blockwise::gaussianSmoothMultiArray(v_img, v_result, opt);
     timer.stop();
     acc_vigra(boost::lexical_cast<float>(timer.format(8,"%w")));
     // --- End vigra measurements ---

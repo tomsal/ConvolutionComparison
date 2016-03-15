@@ -1,4 +1,5 @@
 #include <iostream>
+#include <thread>
 
 #include <arrayfire.h>
 
@@ -56,6 +57,7 @@ int main(int argc, char* argv[]){
     std::cout << "\tN: " << N << "\n";
     std::cout << "\tSigma: " << sigma << "\n";
     std::cout << "\tDevice: " << device << "\n";
+    std::cout << "\tHardware concurrency: " << std::thread::hardware_concurrency() << "\n";
   }
 
   // select GPU device
@@ -176,11 +178,12 @@ int main(int argc, char* argv[]){
 		<< accus::mean(acc_vigra) << ", " << sqrt(accus::variance(acc_vigra)) << "\n";
     }
     else{
-      std::cout << "# size, sigma, af kernel [s], af cpy h->d mean [s], af cpy h->d stddev [s],"
-		   " af convolve mean [s], af convolve stddev [s],"
-		   " af cpy d->h mean [s], af cpy d->h stddev [s],"
-                   " af total mean [s], af total stddev [s],"
-		   " vigra mean [s], vigra stddev [s]\n";
+      std::cout << "# (1) size, (2) sigma, (3) af kernel [s],"
+		   " (4) af cpy h->d mean [s], (5) af cpy h->d stddev [s],"
+		   " (6) af convolve mean [s], (7) af convolve stddev [s],"
+		   " (8) af cpy d->h mean [s], (9) af cpy d->h stddev [s],"
+                   " (10) af total mean [s], (11) af total stddev [s],"
+		   " (12) vigra mean [s], (13) vigra stddev [s]\n";
     }
   }
 

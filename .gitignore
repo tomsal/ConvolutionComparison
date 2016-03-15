@@ -1,4 +1,5 @@
 *.swp
+*.out
 CMakeCache.txt
 CMakeFiles
 CMakeScripts

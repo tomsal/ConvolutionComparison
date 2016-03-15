@@ -4,7 +4,7 @@
 //#include <vigra/stdimage.hxx>
 //#include <vigra/multi_array.hxx>
 //#include <vigra/hdf5impex.hxx>
-//#include <vigra/multi_convolution.hxx>
+#include <vigra/multi_convolution.hxx>
 #include <vigra/multi_blockwise.hxx>
 //#include <vigra/random.hxx>
 
@@ -28,7 +28,7 @@ int main(int argc, char** argv){
   // vigra convolution result
   vigra::MultiArray<2, float> v_result(vigra::Shape2(size,size));
 
-  vigra::blockwise::BlockwiseConvolutionOptions<2> opt;
+  vigra::BlockwiseConvolutionOptions<2> opt;
   opt.innerScale(sigma);
   opt.setNumThreads(8);
 
@@ -37,7 +37,7 @@ int main(int argc, char** argv){
   timer.start();
 #endif
 
-  vigra::blockwise::gaussianSmoothMultiArray(v_img, v_result, opt);
+  vigra::gaussianSmoothMultiArray(v_img, v_result, opt);
 
 #ifndef NOBOOSTTIMER
   timer.elapsed();

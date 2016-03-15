@@ -60,15 +60,15 @@ int main(int argc, char* argv[]){
     std::cout << "\tHardware concurrency: " << std::thread::hardware_concurrency() << "\n";
   }
 
-  // select GPU device
-  af::setDevice(device);
-
   // create timer object
   boost::timer::auto_cpu_timer timer;
 
   // --- Start create input image
   float* h_img = (float*) malloc(sizeof(float)*size*size); // random input image
   try{
+    // select GPU device
+    af::setDevice(device);
+
     af::randu(size, size).host((void*)&h_img[0]);
   } catch (af::exception& e) {
     fprintf(stderr, "%s\n", e.what());
@@ -77,6 +77,9 @@ int main(int argc, char* argv[]){
     return 1;
   }
   // --- End create input image
+  
+  if(!raw)
+    af::info();
 
   // load vigra image
   vigra::MultiArray<2, float> v_img(vigra::Shape2(size,size));
@@ -131,7 +134,7 @@ int main(int argc, char* argv[]){
 
     vigra::blockwise::BlockwiseConvolutionOptions<2> opt;
     opt.innerScale(sigma);
-    opt.setNumThreads(4);
+    opt.setNumThreads(12);
     // --- Start vigra measurements ---
     timer.start();
       vigra::blockwise::gaussianSmoothMultiArray(v_img, v_result, opt);

@@ -3,7 +3,7 @@ set ylabel "Time Arrayfire [s]"
 #set key outside
 
 set terminal png
-set output "../plots/gpu_notebook.png"
+set output "../plots/sigma1_notebook.png"
 
 #set logscale y
 

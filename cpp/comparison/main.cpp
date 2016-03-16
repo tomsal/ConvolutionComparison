@@ -3,15 +3,8 @@
 
 #include <arrayfire.h>
 
-#include <vigra/convolution.hxx>
-#include <vigra/impex.hxx>
-#include <vigra/imageinfo.hxx>
-#include <vigra/stdimage.hxx>
-#include <vigra/multi_array.hxx>
-#include <vigra/hdf5impex.hxx>
 #include <vigra/multi_convolution.hxx>
 #include <vigra/multi_blockwise.hxx>
-#include <vigra/random.hxx>
 
 #include "boost/accumulators/accumulators.hpp"
 #include "boost/accumulators/statistics/stats.hpp"
@@ -33,6 +26,7 @@ int main(int argc, char* argv[]){
     ("sigma", po::value<float>(), "Set sigma for gaussianBlur. Default: 1.0")
     ("raw", po::value<bool>()->zero_tokens(), "Produce raw output (for plotting). Default: false")
     ("device", po::value<int>(), "Select GPU device number. Default: 0")
+    ("cputhreads", po::value<int>(), "Select number of CPU threads. Default: 1")
   ;
 
   po::variables_map options;
@@ -49,6 +43,7 @@ int main(int argc, char* argv[]){
   const float sigma = options.count("sigma") ? options["sigma"].as<float>() : 1.0;
   const bool raw = options.count("raw") ? options["raw"].as<bool>() : false;
   const int device = options.count("device") ? options["device"].as<int>() : 0;
+  const int cputhreads = options.count("cputhreads") ? options["cputhreads"].as<int>() : 1;
   // --- End command line parsing ---
 
   if(!raw){
@@ -57,6 +52,7 @@ int main(int argc, char* argv[]){
     std::cout << "\tN: " << N << "\n";
     std::cout << "\tSigma: " << sigma << "\n";
     std::cout << "\tDevice: " << device << "\n";
+    std::cout << "\tCPU threads: " << cputhreads << "\n";
     std::cout << "\tHardware concurrency: " << std::thread::hardware_concurrency() << "\n";
   }
 
@@ -132,12 +128,12 @@ int main(int argc, char* argv[]){
     acc_af_cpy_dh(boost::lexical_cast<float>(timer.format(8,"%w")));
     // --- End af measurements ---
 
-    vigra::blockwise::BlockwiseConvolutionOptions<2> opt;
+    vigra::BlockwiseConvolutionOptions<2> opt;
     opt.innerScale(sigma);
-    opt.setNumThreads(12);
+    opt.setNumThreads(cputhreads);
     // --- Start vigra measurements ---
     timer.start();
-      vigra::blockwise::gaussianSmoothMultiArray(v_img, v_result, opt);
+      vigra::gaussianSmoothMultiArray(v_img, v_result, opt);
     timer.stop();
     acc_vigra(boost::lexical_cast<float>(timer.format(8,"%w")));
     // --- End vigra measurements ---

@@ -16,10 +16,11 @@ N = str(args.N)
 device = str(args.device)
 cputhreads = str(args.cputhreads)
 
+os.environ['CUDA_VISIBLE_DEVICES'] = device
 os.system("./a.out --N 0 --raw > data/data.dat")
 for size in sizes:
   size = str(size)
   for sigma in sigmas: 
     sigma = str(sigma)
-    print "./a.out --cputhreads "+cputhreads+" --device "+device+" --sigma "+sigma+" --size "+size+" --N "+N+" --raw >> data/data.dat"
-    os.system("./a.out --cputhreads "+cputhreads+" --device "+device+" --sigma "+sigma+" --size "+size+" --N "+N+" --raw >> data/data.dat")
+    print "./a.out --cputhreads "+cputhreads+" --device 0 --sigma "+sigma+" --size "+size+" --N "+N+" --raw >> data/data.dat"
+    os.system("./a.out --cputhreads "+cputhreads+" --device 0 --sigma "+sigma+" --size "+size+" --N "+N+" --raw >> data/data.dat")

@@ -92,7 +92,7 @@ int main(int argc, char* argv[]){
 
   // create kernel for arrayfire that equals vigra kernel
   timer.start();
-    const int ksize = int(sigma*3 + 0.5)*2 + 1;
+    const int ksize = int(round(sigma*3))*2 + 1;
     af::array d_kernel = af::gaussianKernel(ksize,ksize,sigma,sigma);
   timer.stop();
   float af_kernel = boost::lexical_cast<float>(timer.format(8,"%w"));
@@ -116,7 +116,7 @@ int main(int argc, char* argv[]){
     acc_af_cpy_hd(boost::lexical_cast<float>(timer.format(8,"%w")));
 
     timer.start();
-      d_result = af::convolve2(d_img,d_kernel);
+      d_result = af::convolve2(d_img,d_kernel); //,AF_CONV_DEFAULT,AF_CONV_SPATIAL);
       af::sync();
     timer.stop();
     acc_af_convolve(boost::lexical_cast<float>(timer.format(8,"%w")));

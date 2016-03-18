@@ -1,0 +1,17 @@
+set xlabel "Size [pixel]"
+set ylabel "Timeratio Vigra/Arrayfire"
+set key left
+
+set terminal png
+set output "../../plots/cmp_single_multithread_sigma5.0_notebook.png"
+
+#set logscale y
+
+plot "../../data/notebook.dat" every 6::5 u 1:($12) t 'Singlethread' w linespoint,\
+"../../data/notebook_multithread.dat" every 6::5 u 1:($12) t 'Multithread' w linespoint,\
+"../../data/notebook_singlethread_block.dat" every 6::5 u 1:($12) t 'Blockwise singlethread' w linespoint
+
+set terminal x11
+replot
+
+pause -1 "Hit any key to continue"

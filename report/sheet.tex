@@ -11,6 +11,7 @@
 \usepackage{enumitem,blindtext}
 \usepackage{xcolor}
 \usepackage{capt-of}
+\usepackage{url}
 
 % Default fixed font does not support bold face
 \DeclareFixedFont{\ttb}{T1}{txtt}{bx}{n}{9} % for bold
@@ -62,6 +63,7 @@ showstringspaces=false            %
   linewidth=\linewidth,
 }
 
+\renewcommand{\UrlFont}{\small}
 
 \begin{document}
 \setlength{\parindent}{0pt}
@@ -69,149 +71,119 @@ showstringspaces=false            %
 \setlist{noitemsep}
 
 \section{Problem}
-- feature computation is bottleneck in classification process
-- current vigra convolution is slow
-- evaluate the improvement that comes with a GPU implementation
+Ilastik uses VIGRA convolution routines to compute features for the calssification process.
+For large data sets, those feature computations represent the computational bottleneck in the pipeline. 
+As convolutions are one of the classical applications for GPUs, they seem to be the reasonable choice for speeding up those computations. 
+% - feature computation is bottleneck in classification process
+% - current vigra convolution is slow
+% - evaluate the improvement that comes with a GPU implementation
 
 \section{Current situation and idea}
-- Vigra single thread implementation
-- use a ready to use library for GPU implementation as CUDA code requires high maintenance, high effort to be efficient and flexible
-- use arrayfire
+In the current setup, VIGRA is used via the python wrapper.
+This VIGRA version/method uses only a single-thread convolution implementation.
+We evaluate the performance of VIGRA gaussian filters in single-thread mode and multi-thread mode (Version 1.11) and Arrayfire gaussian filters.
+% - Vigra single thread implementation
+% - use a ready to use library for GPU implementation as CUDA code requires high maintenance, high effort to be efficient and flexible
+% - use arrayfire
 
-\section{Why arrayfire?}
-- uses CUDA and OpenCL backend
-  - makes use of many features of the respective libraries and GPUs
-- flexible
-- actively developed
-- good support
-Advantages over other implementations:
-OpenGL
-- does not make use of all available features of the GPUs (e.g. uses texture buffer, no shared memory)
-OpenCV
-- arrayfire claims to be faster
-- OpenCV can be considered to replace VIGRA
+\section{Why ArrayFire?}
+ArrayFire (\url{http://www.arrayfire.com}) aims to be a flexible, hardware-neutral accelerator library.
+This means it is not only running on CUDA GPUs, but also includes an OpenCL backend (e.g. for AMD GPUs) and a CPU fallback.
+Due to the backends for CUDA and OpenCL, it is still able to leverage many specific features, that are essential to reach high performance on GPUs (see "Why not OpenGL"). \\
+Moreover, the library is under active development and it is to be expected that it will modified for new hardware in the future.
+Also the ArrayFire team aims to support users as good as possible, e.g with an active user group or personal consultation. \\ \\
+%+ uses CUDA and OpenCL backend
+%  + makes use of many features of the respective libraries and GPUs
+%+ flexible
+%+ actively developed
+%+ good support
+%+ supports batch convolution
+%- still under development, might throw some unexpected exceptions...
+\textbf{Why not own CUDA code?}\\
+Although CUDA implementations could improve performance by writing more hardware specific code, it would be prone to overengineering.
+Also such code requires enourmous effort to make it efficient and flexible and will be a lot harder to maintain. \\ \\
+% Other implementations:
+% CUDA:
+% + might be more 
+% - high maintenance
+% - a lot of effort to make it efficient 
+% - danger of overengineering
+\textbf{Why not OpenCV?} \\
+OpenCV also provides GPU implementations.
+It also seems to achieve good performance and might be a useful alternative.
+Yet, we concentrated on ArrayFire.\\\\
+However, there are benchmarks on ArrayFire vs OpenCV:\\
+\url{http://mcclanahoochie.com/blog/2011/09/opencv-vs-libjacket-gpu-sobel-filtering/} \\
+\url{http://mcclanahoochie.com/blog/2011/10/gpu-convolution-opencv-gpu-and-libjacket-part-2/} \\
+\url{http://opencv-gpu.blogspot.de/} \\ \\
+% %- arrayfire claims to be faster
+% - OpenCV can be considered to replace VIGRA
+\textbf{Why not OpenGL?} \\
+OpenGL would provide a widely supported library.
+As a consequence, it does not exploit all available features of specific GPUs as it is possible with CUDA or OpenCL. For example, OpenGL usually relies on texture buffers and does not make use of shared memory which is essential for fast convolutions.
+Also an OpenGL implementation might result in more complicated code. \\ \\
+%- does not make use of all available features of the GPUs (e.g. uses texture buffer, no shared memory)
+%- might require more complicated implementation
+\textbf{Why not SciPy?} \\
+First test indicated that SciPy only provides a small speedup and seems to use an single-thread CPU implementation.
+%SciPy
+%- python tests only showed slight improvement over VIGRA
+%- runs single thread in test runs
 
-\section{TODO}
-  \begin{itemize}
-    \item (29.01.) Compare CUDA vs. VIGRA vs. ArrayFire in C++
-    \item (08.02.) Implement arrayfire hessianofgaussian or stensor (C++ or python)
-    \item (02.02.) Checkout OpenCV CUDA/OpenCL performance
-    \item (29.01.) Implement CUDA c++ gaussian (ignore padding)
-    \item DONE: (08.02.) Compare python vigra, opencv, arrayfire
-    \item DONE: (03.02.) Investigate data movement in ArrayFire (see af usergroup post)
-    \item DONE: (29.01.) Implement ArrayFire c++ gaussian (ignore padding)
-    \item DONE: (29.01.) Implement VIGRA c++ gaussian (ignore padding)
-  \end{itemize}
+\section{Arrayfire vs VIGRA}
 
-
-\section{Current setup}
-  \subsection{vigra.filters.gaussianSmoothing(img, sigma)}
-    \begin{itemize}
-      \item separated x-,y- convolution
-      \item kernel is initialized from scratch for every call
-      \item kernel element: $k[i] = \frac{1}{\sqrt{2\pi}\sigma} e^{-\frac{i^2}{2\sigma^2}} $
-      \item kernel radius: $r = \textrm{round}(3*\sigma)$
-    \end{itemize}
-  \subsection{vigra.filters.laplacianOfGaussian(img, sigma)}
-  \subsection{vigra.filters.gaussianGradientMagnitude(img, sigma)}
-  \subsection{vigra.filters.gaussianSmoothing(img, sigma) - vigra.filters.gaussianSmoothing(img, 0.66*sigma)}
-  \subsection{vigra.filters.structureTensorEigenvalues(img, sigma, sigma/2.0)}
-  \subsection{vigra.filters.hessianOfGaussianEigenvalues(img, sigma)}
-
-
-\section{HiWi HCI Notes}
-
-\subsection{09.02.2016 (h)}
-  \begin{itemize}
-    \item bigheron ip: 192.168.128.14
-  \end{itemize}
-  
-
-\subsection{08.02.2016 (4h)}
-  \begin{itemize}
-    \item ran python comparison, approx arrayfire speed up of 10, approx opencv speed up of 2
-    \item Sizes range from 256x256 to 10000x10000
-    \item single image convolution is important, yet batching copy operations might be possible
-  \end{itemize}
-  
-
-\subsection{02.02.2016 (2h)}
-  Worked on arrayfire c++ implementation. Set up vigra and such on personal notebook.
-
-\subsection{02.02.2016 (1.5h)}
-
-  \subsubsection{OpenCV}
-    \begin{itemize}
-      \item CUDA support
-      \item \url{http://docs.opencv.org/3.0.0/d4/d25/classcv_1_1cuda_1_1Convolution.html}
-      \item Comparison OpenCV vs. ArrayFire (LibJacket) \url{http://mcclanahoochie.com/blog/2011/09/opencv-vs-libjacket-gpu-sobel-filtering/}
-    \end{itemize}
+\subsection{Differences in border treatment (padding)}
+The convolution of ArrayFire can be configured to have the same result as the VIGRA convolution, exept for one difference.
+VIGRA uses reflected border padding by default, whereas ArrayFire uses zero padding at the borders.
+This means ArrayFire will add zeros to the image as soon as the kernel is not overlapping entirely with the image.
+Therefore results in border regions differ from default vigra results.\\
+The results not affected by those differences have been tested to be equal.
+%  - border treatment: AF uses 0 padding
+%  - VIGRA: is more flexible
+%  -> different results in border region
 
 
-\subsection{29.01.2016 (9:30 - 12:00, 12:30 - 14:30, 4.5h)}
+\subsection{Hardware used for testing}
+\begin{itemize}
+  \item notebook - Intel(R) Core(TM) i7-3632QM CPU @ 2.20GHz, 8 GB RAM, GeForce GT 635M (2GB), CUDA Compute 2.1
+  \item littleheron - Intel(R) Xeon(R) CPU E5-2643 v3 @ 3.40GHz, 64 GB RAM, GeForce GTX TITAN X (12 GB) CUDA Compute 5.2
+\end{itemize}
 
-  \subsubsection{ArrayFire}
-    \begin{itemize}
-      \item handles 1D,2D,3D convolutions
-      \item allows batch processing (1 Kernel, n images or n Kernels, 1 image and so on)
-      \item Does it seperate Kernels?
-      \item Example: \url{http://www.arrayfire.com/docs/getting_started_2convolve_8cpp-example.htm}
-    \end{itemize}
+\subsection{C++ tests for gaussian smoothing}
+\subsubsection{Total GPU time}
+\begin{center}
+  \includegraphics[width=0.8\textwidth]{media/gpu_total_notebook.png}
+  \captionof{figure}{Total GPU times on notebook for different gaussian filter sizes and image sizes. Kernel size is calculated as follows: $r = \textrm{round}(3\sigma) \cdot 2 + 1$.}
+\end{center}
 
-  \subsubsection{Talked to Sven}
-    \begin{itemize}
-      \item ArrayFire
-      \item nexts steps (see todo)
-      \item received Michaela's code
-    \end{itemize}
+\begin{center}
+  \includegraphics[width=0.8\textwidth]{media/gpu_total_littleheron.png}
+  \captionof{figure}{Total GPU times on littleheron for different gaussian filter sizes and image sizes. Kernel size is calculated as follows: $r = \textrm{round}(3\sigma) \cdot 2 + 1$.}
+\end{center}
 
-  \subsubsection{Commands}
+\subsubsection{Ratio VIGRA single-thread vs ArrayFire}
+\begin{center}
+  \includegraphics[width=0.8\textwidth]{media/ratio_notebook.png}
+  \captionof{figure}{Ratio $\frac{\textrm{VIGRA time}}{\textrm{ArrayFire time}}$ on notebook for different gaussian filters and image sizes. We experience a speed up for ratios $> 1$.}
+\end{center}
 
-    Show vigra compiler options
-    \begin{lstlisting}[style=BashInputStyle]
-# vigra-config --cpp-flags --libs 
-    \end{lstlisting}
+\begin{center}
+  \includegraphics[width=0.8\textwidth]{media/ratio_littleheron.png}
+  \captionof{figure}{Ratio $\frac{\textrm{VIGRA time}}{\textrm{ArrayFire time}}$ on littleheron for different gaussian filters and image sizes. We experience a speed up for ratios $> 1$.}
+\end{center}
 
-\subsection{26.01.2016 (3h)}
+\subsubsection{Ratio VIGRA multi-thread vs ArrayFire}
+\begin{center}
+  \includegraphics[width=0.8\textwidth]{media/ratio_notebook_multithread.png}
+  \captionof{figure}{Ratio $\frac{\textrm{VIGRA time}}{\textrm{ArrayFire time}}$ on notebook for different gaussian filters and image sizes. We experience a speed up for ratios $> 1$.}
+\end{center}
 
-  Base on CUDA samples. separableConvolution and textureConvolution are already implemented.
-
-  \subsubsection{snippets}
-    \begin{python}[caption="print out gaussian 1D kernel"]
-import vigra
-
-sigma = 3
-
-kernel = vigra.filters.Kernel1D()
-kernel.initGaussian(sigma)
-
-for i in range(kernel.left(),kernel.right()+1):
-  print kernel[i]
-    \end{python}
-
-  \subsubsection{Addresses}
-    \begin{itemize}
-      \item bigheron - GPU system
-      \item hciwiki.iwr.uni-heidelberg.de
-    \end{itemize}
+\begin{center}
+  \includegraphics[width=0.8\textwidth]{media/ratio_littleheron_multithread.png}
+  \captionof{figure}{Ratio $\frac{\textrm{VIGRA time}}{\textrm{ArrayFire time}}$ on littleheron for different gaussian filters and image sizes. We experience a speed up for ratios $> 1$.}
+\end{center}
 
 
-\subsection{22.01.2016 (3h)}
 
-  \subsubsection{Ideas}
-    \begin{itemize}
-      \item Vigra efficiency improvements
-      \item CUDA/OpenCL (CUDA samples!)
-      \item OpenGL
-      \item FFT approach
-    \end{itemize}
-
-  \subsubsection{Commands}
-
-    \begin{lstlisting}[style=BashInputStyle]
-# source miniconda2/bin/activate ilastik-devel
-# source miniconda2/bin/activate root
-# conda create -n ilastik-devel -c ilastik ilastik-everything-but-tracking
-    \end{lstlisting}
 
 \end{document}

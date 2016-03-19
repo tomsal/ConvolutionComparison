@@ -11,4 +11,5 @@ for size in sizes:
   size = str(size)
   for sigma in sigmas: 
     sigma = str(sigma)
+    print "python compare.py --sigma "+sigma+" --size "+size+" --N "+N+" --raw >> data/data.dat"
     os.system("python compare.py --sigma "+sigma+" --size "+size+" --N "+N+" --raw >> data/data.dat")

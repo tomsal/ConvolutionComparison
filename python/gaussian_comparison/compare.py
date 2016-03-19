@@ -77,11 +77,13 @@ if __name__ == "__main__":
     end = time.clock()
     af_cpy_dh[i] = end-start
 
+    ksize = int(3*args.sigma)*2+1
+    convopts = vigra.blockwise.convolutionOptions((ksize,ksize),sigma=args.sigma,numThreads=8)
     ## vigra measurement
     start = time.clock()
     #---
     vimg = vigra.Image(img)
-    vres = np.asarray(vigra.filters.gaussianSmoothing(vimg, args.sigma))
+    vres = np.asarray(vigra.blockwise.gaussianSmooth(vimg, options=convopts))
     #---
     end = time.clock()
     vigra_t[i] = end-start
